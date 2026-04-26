@@ -16,7 +16,12 @@ swagger link :- https://localhost:7073/swagger/index.html
 
 # \## Features
 
-# 
+\-User Operation
+  -login
+  -registation
+===
+
+
 
 # \- Student CRUD Operations
 
@@ -28,9 +33,9 @@ swagger link :- https://localhost:7073/swagger/index.html
 
 # &#x20; - Delete student
 
-# \- JWT Authentication
+# \- JWT Authentication + Role Based Authentication
 
-# \- Layered Architecture
+# \- Layered Architecture + Clean Architecture style
 
 # \- SQL Server Database
 
@@ -38,7 +43,10 @@ swagger link :- https://localhost:7073/swagger/index.html
 
 # \- Global Exception Handling
 
-# \- Logging
+\- Logging + SeriLog + File
+- UnitOfRepository Patter has follow
+
+===
 
 # 
 
@@ -51,6 +59,8 @@ swagger link :- https://localhost:7073/swagger/index.html
 # \- C#
 
 # \- Entity Framework Core
+
+# \- Mediator + CQRS Pattern
 
 # \- SQL Server
 
@@ -70,11 +80,15 @@ swagger link :- https://localhost:7073/swagger/index.html
 
 # ```text
 
-# ZestTechnicalAssignment.Api
+# ZestTechnicalAssignment.Api  
 
-# ZestTechnicalAssignment.Business
+ZestTechnicalAssignment.Business 
+ZestTechnicalAssignment.Data
+===
 
-# ZestTechnicalAssignment.Data
+ZestTechnicalAssignment.Shared
 
-# ZestTechnicalAssignment.Shared
+Web api is fully working but in frontend side unable to create UI for backend.
+
+===
 
