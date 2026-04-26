@@ -8,12 +8,13 @@ namespace ZestTechnicalAssisgnMent.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthController(IAuthRepositories authRepositories) : ControllerBase
+    public class AuthController(IAuthRepositories authRepositories,ILogger<AuthController> _logger) : ControllerBase
     {
         [HttpPost("Login")]
         public async Task<IActionResult> Login(ZestTechicalAssignment.Business.Request.AuthRequest.LoginRequest request)
         {
             var resposne = await authRepositories.Login(request);
+            _logger.LogInformation("Login Successfully");
             return Ok(resposne);
 
         }
@@ -22,6 +23,7 @@ namespace ZestTechnicalAssisgnMent.Api.Controllers
         public async Task<IActionResult> Register(ZestTechicalAssignment.Business.Request.AuthRequest.RegistrationRequest request)
         {
             var resposne = await authRepositories.Registration(request);
+            _logger.LogInformation("Register Successfully");
             return Ok(resposne);
 
         }

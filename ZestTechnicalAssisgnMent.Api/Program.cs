@@ -13,11 +13,21 @@ using ZestTechnicalAssignment.DataAccess.Repositories;
 using ZestTechnicalAssignment.DataAccess.Services;
 using ZestTechnicalAssignment.Domain.Entities;
 using ZestTechnicalAssisgnMent.Api.ExceptionHandler;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Information()
+    .WriteTo.Console()
+    .WriteTo.File(
+        "Logs/log-.txt",
+        rollingInterval: RollingInterval.Day
+    )
+    .CreateLogger();
 
+builder.Host.UseSerilog();
 builder.Services.AddControllers();
 
 builder.Services.AddSwaggerGen(options =>
@@ -101,7 +111,7 @@ builder.Services.AddCors(options =>
 //builder.Services.AddOpenApi();
 
 var app = builder.Build();
-
+app.UseSerilogRequestLogging();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

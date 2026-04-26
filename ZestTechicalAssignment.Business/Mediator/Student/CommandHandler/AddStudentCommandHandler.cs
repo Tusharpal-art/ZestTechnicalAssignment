@@ -8,15 +8,21 @@ using ZestTechicalAssignment.Business.Request.StudentRequest;
 using ZestTechnicalAssignment.Domain;
 using ZestTechicalAssignment.Business.Response.StudentRes;
 using ZestTechnicalAssignment.Shared.ApiResponseModel;
+using Microsoft.Extensions.Logging;
 
 namespace ZestTechicalAssignment.Business.Mediator.Student.CommandHandler
 {
-    public class AddStudentCommandHandler(IMapper mapper , IUnitOfRepositories unitOfRepositories,IAuthRepositories auth) : IRequestHandler<AddStudentRequest, Result<StudentResponse>>
+    public class AddStudentCommandHandler(IMapper mapper , IUnitOfRepositories unitOfRepositories,IAuthRepositories auth,ILogger<AddStudentCommandHandler> _logger) : IRequestHandler<AddStudentRequest, Result<StudentResponse>>
     {
         public async Task<Result<StudentResponse>> Handle(AddStudentRequest request, CancellationToken cancellationToken)
         {
             var currentUser = await auth.GetCurrentUser();
-            if (currentUser == null) return Result<StudentResponse>.Failure("User Not Exists");
+            
+            if (currentUser == null) 
+            {
+                _logger.LogWarning("User Not Exists");
+                return Result<StudentResponse>.Failure("User Not Exists");
+            }
 
 
             var student = mapper.Map<ZestTechnicalAssignment.Domain.Entities.Student>(request);
@@ -27,7 +33,7 @@ namespace ZestTechicalAssignment.Business.Mediator.Student.CommandHandler
            var entity =  await unitOfRepositories.GetRepository<ZestTechnicalAssignment.Domain.Entities.Student>().Add(student);
 
             await unitOfRepositories.SaveChangesAsync(cancellationToken);
-
+            _logger.LogInformation("Student Added Successfully");
 
             return Result<StudentResponse>.Successs(mapper.Map<StudentResponse>(student));
 

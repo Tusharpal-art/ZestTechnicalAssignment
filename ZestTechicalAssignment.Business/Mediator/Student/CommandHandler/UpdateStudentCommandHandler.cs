@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -10,18 +11,24 @@ using ZestTechnicalAssignment.Shared.ApiResponseModel;
 
 namespace ZestTechicalAssignment.Business.Mediator.Student.CommandHandler
 {
-    public class UpdateStudentCommandHandler(IAuthRepositories auth,IUnitOfRepositories unitOfRepositories ,IMapper mapper) : IRequestHandler<UpdateStudentRequest, Result<StudentResponse>>
+    public class UpdateStudentCommandHandler(IAuthRepositories auth,IUnitOfRepositories unitOfRepositories ,IMapper mapper,ILogger<UpdateStudentCommandHandler> _logger) : IRequestHandler<UpdateStudentRequest, Result<StudentResponse>>
     {
         public async Task<Result<StudentResponse>> Handle(UpdateStudentRequest request, CancellationToken cancellationToken)
         {
             var currentUser = await auth.GetCurrentUser();
-            if (currentUser == null) return Result<StudentResponse>.Failure("User Not Exists");
+            if (currentUser == null)
+            {
+                _logger.LogWarning("User Not Exists");
+                return Result<StudentResponse>.Failure("User Not Exists");
+            }
+
 
             var isStudentExits = await unitOfRepositories.GetRepository<ZestTechnicalAssignment.Domain.Entities.Student>().GetById(request.Id);
 
             if(isStudentExits==null)
             {
-               return Result<StudentResponse>.Failure("The Updated Student Not Exist");
+                _logger.LogWarning("The Updated Student Not Exist");
+                return Result<StudentResponse>.Failure("The Updated Student Not Exist");
             }
 
             isStudentExits.Name = request.Name ?? isStudentExits.Name;
@@ -31,6 +38,7 @@ namespace ZestTechicalAssignment.Business.Mediator.Student.CommandHandler
 
             var response = await unitOfRepositories.GetRepository<ZestTechnicalAssignment.Domain.Entities.Student>().Update(isStudentExits);
             await unitOfRepositories.SaveChangesAsync(cancellationToken);
+            _logger.LogInformation("Student Updated Successfully");
 
             return Result<StudentResponse>.Successs(mapper.Map<StudentResponse>(isStudentExits));
 
