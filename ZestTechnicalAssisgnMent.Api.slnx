@@ -1,0 +1,8 @@
+<Solution>
+  <Project Path="ZestTechicalAssignment.Business/ZestTechicalAssignment.Business.csproj" />
+  <Project Path="ZestTechnicalAssignment.App/ZestTechnicalAssignment.App.csproj" Id="ce9211f5-b53f-4d49-8a76-146eb91e2930" />
+  <Project Path="ZestTechnicalAssignment.DataAccess/ZestTechnicalAssignment.DataAccess.csproj" />
+  <Project Path="ZestTechnicalAssignment.Domain/ZestTechnicalAssignment.Domain.csproj" />
+  <Project Path="ZestTechnicalAssignment.Shared/ZestTechnicalAssignment.Shared.csproj" />
+  <Project Path="ZestTechnicalAssisgnMent.Api/ZestTechnicalAssisgnMent.Api.csproj" />
+</Solution>

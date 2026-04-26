@@ -1,0 +1,126 @@
+﻿@page "/login"
+@using Microsoft.AspNetCore.Components.Authorization
+@using ZestTechnicalAssignment.App.Authentication
+@using ZestTechnicalAssignment.App.InterFacess
+@using ZestTechnicalAssignment.App.Models
+@using ZestTechnicalAssignment.App.Servicess
+
+@inject ISnackbar Snackbar
+@inject AuthenticationStateProvider authenticationState
+@inject IAuthServices AuthService
+@inject IJSRuntime js
+
+<MudContainer MaxWidth="MaxWidth.Small" Class="mt-16">
+    <MudCard Elevation="8" Class="pa-6 rounded-lg">
+
+        <MudCardHeader>
+            <CardHeaderContent>
+                <MudText Typo="Typo.h5" Align="Align.Center">
+                    Login
+                </MudText>
+
+                <MudText Typo="Typo.body2" Align="Align.Center" Color="Color.Secondary">
+                    Enter your email and password
+                </MudText>
+            </CardHeaderContent>
+        </MudCardHeader>
+
+        <MudCardContent>
+            <EditForm Model="@loginRequest" OnValidSubmit="@HandleLoginAsync">
+                <FluentValidationValidator DisableAssemblyScanning="true" />
+
+                <MudTextField T="string"
+                              Label="Email"
+                              Variant="Variant.Outlined"
+                              Margin="Margin.Dense"
+                              FullWidth="true"
+                              For="@(() => loginRequest.Email)"
+                              @bind-Value="loginRequest.Email"
+                              Adornment="Adornment.Start"
+                              AdornmentIcon="@Icons.Material.Filled.Email" />
+
+                <MudTextField T="string"
+                              Label="Password"
+                              Variant="Variant.Outlined"
+                              Margin="Margin.Dense"
+                              FullWidth="true"
+                              InputType="InputType.Password"
+                              For="@(() => loginRequest.Password)"
+                              @bind-Value="loginRequest.Password"
+                              Adornment="Adornment.Start"
+                              AdornmentIcon="@Icons.Material.Filled.Lock"
+                              Class="mt-4" />
+
+                <MudButton ButtonType="ButtonType.Submit"
+                           Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           FullWidth="true"
+                           Disabled="@isLoading"
+                           Class="mt-6">
+
+                    @if (isLoading)
+                    {
+                        <MudProgressCircular Size="Size.Small"
+                                             Indeterminate="true"
+                                             Class="me-2" />
+                        <span>Logging in...</span>
+                    }
+                    else
+                    {
+                        <span>Login</span>
+                    }
+
+                </MudButton>
+            </EditForm>
+        </MudCardContent>
+
+    </MudCard>
+</MudContainer>
+
+@code {
+
+    public LoginDto loginRequest = new();
+    private bool isLoading = false;
+
+    private async Task HandleLoginAsync()
+    {
+        try
+        {
+            isLoading = true;
+
+            // TODO: Here call your login API
+            // Example:
+            var response = await AuthService.LoginAccount(loginRequest);
+
+            if(response.Success)
+            {
+                var custom = (CustomAuthenticationState)authenticationState;
+                await custom.UpdateAuthenticationState(response.Data);
+
+                Snackbar.Add("Login successful!", MudBlazor.Severity.Success, config =>
+                {
+                    config.VisibleStateDuration = 3000;
+                    config.HideTransitionDuration = 300;
+                    config.ShowTransitionDuration = 300;
+                });
+            }
+            else
+            {
+                Snackbar.Add($"Login failed", MudBlazor.Severity.Error);
+            }
+
+            // await Task.Delay(500);
+
+            // Snackbar.Add("Login form is valid. Now call API here.", MudBlazor.Severity.Success);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Login failed: {ex.Message}", MudBlazor.Severity.Error);
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+}
